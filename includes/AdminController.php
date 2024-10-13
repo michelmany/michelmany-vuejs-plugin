@@ -1,11 +1,9 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
+namespace MMVUEJS;
 
-class MMVUEJS_Admin {
-	public function __construct() {
+class AdminController {
+	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 	}
 
@@ -15,8 +13,8 @@ class MMVUEJS_Admin {
 	 */
 	public function add_admin_menu(): void {
 		add_menu_page(
-			__( 'MMVJP Dashboard', 'mmvjp' ),
-			__( 'MMVJP', 'mmvjp' ),
+			__( 'MMVUEJS Dashboard', 'mmvuejs' ),
+			__( 'MMVUEJS', 'mmvuejs' ),
 			'manage_options',
 			'mmvuejs-dashboard',
 			array( $this, 'display_dashboard' ),
