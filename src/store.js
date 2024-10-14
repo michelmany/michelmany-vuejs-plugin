@@ -9,7 +9,7 @@ export default createStore({
                 humanReadableDate: true,
                 emails: [],
             },
-            tableData: [],
+            tableData: null,
             graphData: [],
         };
     },
@@ -40,8 +40,9 @@ export default createStore({
         },
         fetchData({commit}) {
             return axios.get('/data').then(response => {
-                commit('setTableData', response.data.data);
-                commit('setGraphData', response.data.graph);
+                const apiData = response.data;
+                commit('setTableData', apiData.table);
+                commit('setGraphData', apiData.graph);
             });
         },
     },
