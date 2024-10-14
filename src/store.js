@@ -1,8 +1,5 @@
 import {createStore} from 'vuex';
-import axios from 'axios';
-
-const SETTINGS_URL = '/wp-json/mmvuejs/v1/settings';
-const DATA_URL = '/wp-json/mmvuejs/v1/data';
+import axios from './axios';
 
 export default createStore({
     state() {
@@ -32,18 +29,18 @@ export default createStore({
     },
     actions: {
         fetchSettings({commit}) {
-            return axios.get(SETTINGS_URL).then(response => {
+            return axios.get('/settings').then(response => {
                 commit('setSettings', response.data);
             });
         },
-        updateSettings({commit}, settings) {
-            return axios.post(SETTINGS_URL, settings).then(response => {
-                commit('setSettings', response.data);
+        updateSetting({commit}, {key, value}) {
+            return axios.post(`/settings/${key}`, {value}).then(response => {
+                commit('updateSetting', {key, value: response.data[key]});
             });
         },
         fetchData({commit}) {
-            return axios.get(DATA_URL).then(response => {
-                commit('setTableData', response.data.table);
+            return axios.get('/data').then(response => {
+                commit('setTableData', response.data.data);
                 commit('setGraphData', response.data.graph);
             });
         },
