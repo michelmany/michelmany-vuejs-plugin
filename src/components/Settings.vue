@@ -1,5 +1,5 @@
 <template>
-  <div class="settings" v-if="!loading">
+  <div class="settings">
     <h2>Settings</h2>
     <form @submit.prevent="submitSettings">
       <div class="form-group">
@@ -7,11 +7,10 @@
         <input
             id="numberOfRows"
             type="number"
-            v-model.number="localSettings.numberOfRows"
+            v-model.number="settings.numberOfRows"
             min="1"
             max="5"
         />
-        <div v-if="errors.numberOfRows" class="error">{{ errors.numberOfRows }}</div>
       </div>
 
       <div class="form-group">
@@ -20,16 +19,16 @@
           <label>
             <input
                 type="radio"
-                value="true"
-                v-model="localSettings.humanReadableDate"
+                :value="true"
+                v-model="settings.humanReadableDate"
             />
             Human Readable
           </label>
           <label>
             <input
                 type="radio"
-                value="false"
-                v-model="localSettings.humanReadableDate"
+                :value="false"
+                v-model="settings.humanReadableDate"
             />
             Unix Timestamp
           </label>
@@ -38,15 +37,15 @@
 
       <div class="form-group">
         <label>Emails:</label>
-        <div v-for="(email, index) in localSettings.emails" :key="index" class="email-field">
+        <div v-for="(email, index) in settings.emails" :key="index" class="email-field">
           <input
               type="email"
-              v-model="localSettings.emails[index]"
+              v-model="settings.emails[index]"
           />
           <button
               type="button"
               @click="removeEmail(index)"
-              v-if="localSettings.emails.length > 1"
+              v-if="settings.emails.length > 1"
           >
             Remove
           </button>
@@ -55,7 +54,7 @@
             type="button"
             class="mmvuejs-btn mmvuejs-btn-md mmvuejs-btn-gray"
             @click="addEmail"
-            v-if="localSettings.emails.length < 5"
+            v-if="settings.emails.length < 5"
         >
           Add Email
         </button>
@@ -72,51 +71,17 @@ import {mapState, mapActions} from 'vuex';
 
 export default {
   name: 'Settings',
-  data() {
-    return {
-      localSettings: {
-        numberOfRows: 5,
-        humanReadableDate: false,
-        emails: [],
-      },
-      errors: {},
-      loading: true,
-    };
-  },
   computed: {
     ...mapState(['settings']),
   },
   methods: {
-    ...mapActions(['fetchSettings', 'updateSetting']),
+    ...mapActions(['updateSetting']),
     submitSettings() {
-      this.errors = {};
-
-      // Validation for Number of Rows
-      if (
-          this.localSettings.numberOfRows < 1 ||
-          this.localSettings.numberOfRows > 5
-      ) {
-        this.errors.numberOfRows = 'Please enter a value between 1 and 5.';
-      }
-
-      // Validation for Emails
-      if (
-          this.localSettings.emails.length < 1 ||
-          this.localSettings.emails.length > 5
-      ) {
-        this.errors.emails = 'You must enter between 1 and 5 emails.';
-      }
-
-      if (Object.keys(this.errors).length > 0) {
-        // Do not proceed if there are validation errors
-        return;
-      }
-
       // Prepare settings to update
       const settingsToUpdate = {
-        numberOfRows: this.localSettings.numberOfRows,
-        humanReadableDate: this.localSettings.humanReadableDate === 'true',
-        emails: this.localSettings.emails,
+        numberOfRows: this.settings.numberOfRows,
+        humanReadableDate: this.settings.humanReadableDate,
+        emails: this.settings.emails,
       };
 
       // Update each setting individually
@@ -132,22 +97,17 @@ export default {
       });
     },
     addEmail() {
-      this.localSettings.emails.push('');
+      this.settings.emails.push('');
     },
     removeEmail(index) {
-      this.localSettings.emails.splice(index, 1);
+      this.settings.emails.splice(index, 1);
     },
   },
   created() {
     // Fetch settings when component is created
-    this.fetchSettings().then(() => {
-      this.localSettings = {
-        numberOfRows: this.settings.numberOfRows,
-        humanReadableDate: this.settings.humanReadableDate ? 'true' : 'false',
-        emails: [...this.settings.emails],
-      };
-      this.loading = false;
-    });
+    if (!this.settings.emails.length) {
+      this.$store.dispatch('fetchSettings');
+    }
   },
 };
 </script>
@@ -169,11 +129,6 @@ export default {
 
 .email-field button {
   margin-left: 10px;
-}
-
-.error {
-  color: red;
-  font-size: 0.9em;
 }
 
 input[type='email'] {
