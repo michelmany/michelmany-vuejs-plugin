@@ -8,6 +8,7 @@
       <router-link to="/settings">Settings</router-link>
     </nav>
     <div class="mmvuejs-admin-body container">
+      <div class="admin-notices"></div>
       <router-view></router-view>
     </div>
 </template>
