@@ -8,12 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class Init {
 	/**
-	 * Store all the classes  inside an array
+	 * Store all the classes inside an array
 	 * @return string[] Full list of classes
 	 */
 	public static function getServices(): array {
 		return [
 			AdminController::class,
+			RestApiController::class,
 		];
 	}
 
