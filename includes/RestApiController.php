@@ -22,12 +22,17 @@ class RestApiController {
 			},
 		] );
 
-		register_rest_route( 'mmvuejs/v1', '/settings', [
+		register_rest_route( 'mmvuejs/v1', '/settings/(?P<setting_key>[a-zA-Z0-9_-]+)', [
 			'methods'             => 'POST',
 			'callback'            => array( $this, 'update_settings' ),
 			'permission_callback' => function () {
 				return current_user_can( 'manage_options' );
 			},
+			'args'                => [
+				'setting_key' => [
+					'required' => true,
+				],
+			],
 		] );
 
 		register_rest_route( 'mmvuejs/v1', '/data', [
@@ -51,37 +56,81 @@ class RestApiController {
 	}
 
 	public function update_settings( WP_REST_Request $request ) {
-		$params = $request->get_json_params();
+		// Verify nonce
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new WP_Error( 'invalid_nonce', 'Invalid nonce.', [ 'status' => 403 ] );
+		}
 
-		// Sanitize and validate inputs
-		$numberOfRows = intval( $params['numberOfRows'] );
-		$humanReadableDate = filter_var( $params['humanReadableDate'], FILTER_VALIDATE_BOOLEAN );
-		$emails = array_filter( $params['emails'], 'sanitize_email' );
+		$setting_key = $request->get_param( 'setting_key' );
+		$value = $request->get_param( 'value' );
 
-		if ( $numberOfRows < 1 || $numberOfRows > 5 ) {
-			return new WP_Error( 'invalid_number_of_rows', 'Number of rows must be between 1 and 5',
+		// Define allowed settings and their validation callbacks
+		$allowed_settings = [
+			'numberOfRows'      => array( $this, 'validate_number_of_rows' ),
+			'humanReadableDate' => array( $this, 'validate_human_readable_date' ),
+			'emails'            => array( $this, 'validate_emails' ),
+		];
+
+		if ( ! array_key_exists( $setting_key, $allowed_settings ) ) {
+			return new WP_Error( 'invalid_setting', 'Invalid setting key.', [ 'status' => 400 ] );
+		}
+
+		// Validate the value
+		$validation_function = $allowed_settings[ $setting_key ];
+		$valid_value = $validation_function( $value );
+
+		if ( is_wp_error( $valid_value ) ) {
+			return $valid_value; // Return the error
+		}
+
+		// Update the setting
+		$settings = get_option( 'my_plugin_settings', [] );
+		$settings[ $setting_key ] = $valid_value;
+		update_option( 'my_plugin_settings', $settings );
+
+		return rest_ensure_response( [ $setting_key => $valid_value ] );
+	}
+
+	public function validate_number_of_rows( $value ) {
+		$value = (int) $value;
+		if ( $value < 1 || $value > 5 ) {
+			return new WP_Error( 'invalid_number_of_rows', 'Number of rows must be between 1 and 5.',
 				[ 'status' => 400 ] );
 		}
 
+		return $value;
+	}
+
+	public function validate_human_readable_date( $value ) {
+		$value = filter_var( $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+		if ( $value === null ) {
+			return new WP_Error( 'invalid_human_readable_date', 'Invalid value for humanReadableDate.',
+				[ 'status' => 400 ] );
+		}
+
+		return $value;
+	}
+
+	public function validate_emails( $value ) {
+		if ( ! is_array( $value ) ) {
+			return new WP_Error( 'invalid_emails', 'Emails must be an array.', [ 'status' => 400 ] );
+		}
+		$emails = array_map( 'sanitize_email', $value );
+		$emails = array_filter( $emails );
+
 		if ( count( $emails ) < 1 || count( $emails ) > 5 ) {
-			return new WP_Error( 'invalid_email_count', 'You must have between 1 and 5 emails', [ 'status' => 400 ] );
+			return new WP_Error( 'invalid_email_count', 'You must have between 1 and 5 valid emails.',
+				[ 'status' => 400 ] );
 		}
 
 		foreach ( $emails as $email ) {
 			if ( ! is_email( $email ) ) {
-				return new WP_Error( 'invalid_email', 'One or more emails are invalid', [ 'status' => 400 ] );
+				return new WP_Error( 'invalid_email', 'One or more emails are invalid.', [ 'status' => 400 ] );
 			}
 		}
 
-		$settings = [
-			'numberOfRows'      => $numberOfRows,
-			'humanReadableDate' => $humanReadableDate,
-			'emails'            => $emails,
-		];
-
-		update_option( 'mmvuejs_settings', $settings );
-
-		return rest_ensure_response( $settings );
+		return $emails;
 	}
 
 	public function get_data( WP_REST_Request $request ) {
