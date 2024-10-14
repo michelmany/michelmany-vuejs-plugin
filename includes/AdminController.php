@@ -64,5 +64,6 @@ class AdminController {
 		}
 
 		echo '<div class="wrap" id="mmvuejs-app"></div>';
+		echo '<noscript><div class="error">JavaScript is required to use this plugin. Please enable JavaScript in your browser settings.</div></noscript>';
 	}
 }
