@@ -1,6 +1,11 @@
 <template>
   <div class="table-page">
-    <h2>{{ tableData.title }}</h2>
+    <div v-if="tableData">
+      <h2>{{ tableData.title }}</h2>
+    </div>
+    <div v-else>
+      <p>Loading data...</p>
+    </div>
     <table v-if="displayedData.length">
       <thead>
       <tr>
