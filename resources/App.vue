@@ -1,11 +1,11 @@
 <template>
   <div class="mmvuejs-admin-header">
-    <h1>Michel Many VueJS Plugin</h1>
+    <h1>{{ __('Michel Many VueJS Plugin', 'mmvuejs') }}</h1>
   </div>
   <nav class="mmvuejs-admin-nav container">
-    <router-link to="/">Table</router-link>
-    <router-link to="/graph">Graph</router-link>
-    <router-link to="/settings">Settings</router-link>
+    <router-link to="/">{{ __('Table', 'mmvuejs') }}</router-link>
+    <router-link to="/graph">{{ __('Graph', 'mmvuejs') }}</router-link>
+    <router-link to="/settings">{{ __('Settings', 'mmvuejs') }}</router-link>
   </nav>
   <div class="mmvuejs-admin-body container">
     <router-view></router-view>
@@ -14,11 +14,13 @@
 
 <script>
 import {mapActions} from 'vuex';
+const {__} = wp.i18n;
 
 export default {
   name: 'App',
   methods: {
     ...mapActions(['fetchSettings']),
+    __,
   },
   created() {
     this.fetchSettings();

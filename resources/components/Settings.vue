@@ -1,10 +1,10 @@
 <template>
   <div class="settings">
     <div class="admin-notices"></div>
-    <h2>Settings</h2>
+    <h2>{{ __('Settings', 'mmvuejs') }}</h2>
     <form @submit.prevent="submitSettings">
       <div class="form-group">
-        <label for="numberOfRows">Number of Rows (1-5):</label>
+        <label for="numberOfRows">{{ __('Number of Rows (1-5):', 'mmvuejs') }}</label>
         <input
             id="numberOfRows"
             type="number"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="form-group">
-        <label>Date Format:</label>
+        <label>{{ __('Date Format:', 'mmvuejs') }}</label>
         <div>
           <label>
             <input
@@ -23,7 +23,7 @@
                 :value="true"
                 v-model="settings.humanReadableDate"
             />
-            Human Readable
+            {{ __('Human Readable', 'mmvuejs') }}
           </label>
           <label>
             <input
@@ -31,13 +31,13 @@
                 :value="false"
                 v-model="settings.humanReadableDate"
             />
-            Unix Timestamp
+            {{ __('Unix Timestamp', 'mmvuejs') }}
           </label>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Emails:</label>
+        <label>{{ __('Emails:', 'mmvuejs') }}</label>
         <div v-for="(email, index) in settings.emails" :key="index" class="email-field">
           <input
               type="email"
@@ -48,7 +48,7 @@
               @click="removeEmail(index)"
               v-if="settings.emails.length > 1"
           >
-            Remove
+            {{ __('Remove', 'mmvuejs') }}
           </button>
         </div>
         <button
@@ -57,18 +57,18 @@
             @click="addEmail"
             v-if="settings.emails.length < 5"
         >
-          Add Email
+          {{ __('Add Email', 'mmvuejs') }}
         </button>
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit">Save Settings</button>
+      <button type="submit">{{ __('Save Settings', 'mmvuejs') }}</button>
     </form>
   </div>
 </template>
 
 <script>
 import {mapState, mapActions} from 'vuex';
+const { __ } = wp.i18n;
 
 export default {
   name: 'Settings',
@@ -76,8 +76,10 @@ export default {
     ...mapState(['settings']),
   },
   methods: {
+    __,
     ...mapActions(['updateSetting']),
     submitSettings() {
+
       // Prepare settings to update
       const settingsToUpdate = {
         numberOfRows: this.settings.numberOfRows,
@@ -91,9 +93,9 @@ export default {
       });
 
       Promise.all(updatePromises).then(() => {
-        window.showAdminNotice('Settings were successfully saved.');
+        window.showAdminNotice(__('Settings were successfully saved.', 'mmvuejs'));
       }).catch((error) => {
-        window.showAdminNotice('Failed to save settings.', 'error');
+        window.showAdminNotice(__('Failed to save settings.', 'mmvuejs'), 'error');
         console.error(error);
       });
     },

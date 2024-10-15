@@ -4,7 +4,7 @@
       <h2>{{ tableData.title }}</h2>
     </div>
     <div v-else>
-      <p>Loading data...</p>
+      <p>{{ __('Loading data...', 'mmvuejs') }}</p>
     </div>
     <table v-if="displayedData.length">
       <thead>
@@ -26,11 +26,11 @@
       </tr>
       </tbody>
     </table>
-    <p v-else>No data available.</p>
+    <p v-else>{{ __('No data available.', 'mmvuejs') }}</p>
 
     <!-- Emails List -->
     <div class="emails-list">
-      <h3>Emails</h3>
+      <h3>{{ __('Emails', 'mmvuejs') }}</h3>
       <ul>
         <li v-for="(email, index) in settings.emails" :key="index">{{ email }}</li>
       </ul>
@@ -40,6 +40,8 @@
 
 <script>
 import {mapState, mapActions} from 'vuex';
+
+const {__} = wp.i18n;
 
 export default {
   name: 'Table',
@@ -55,6 +57,7 @@ export default {
     },
   },
   methods: {
+    __,
     ...mapActions(['fetchData']),
     formatDate(timestamp) {
       if (this.settings.humanReadableDate) {

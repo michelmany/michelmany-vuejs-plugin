@@ -50,7 +50,7 @@ class AdminController {
         wp_enqueue_script(
             'mmvuejs-admin',
             esc_url(MMVUEJS_PLUGIN_URL . 'dist/main.js'),
-            [],
+            ['wp-i18n'],
             MMVUEJS_VERSION,
             true
         );
@@ -68,6 +68,8 @@ class AdminController {
             'api_url' => esc_url_raw(rest_url()),
             'nonce'   => wp_create_nonce('wp_rest'),
         ]);
+
+		wp_set_script_translations('mmvuejs-admin', 'mmvuejs', MMVUEJS_PLUGIN_PATH . 'languages');
     }
 
     /**
