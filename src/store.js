@@ -10,7 +10,7 @@ export default createStore({
                 emails: [],
             },
             tableData: null,
-            graphData: [],
+            graphData: {},
         };
     },
     mutations: {
