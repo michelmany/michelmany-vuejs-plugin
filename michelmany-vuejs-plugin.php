@@ -3,7 +3,9 @@
  * Plugin Name: Michel Many VueJS Plugin
  * Description: A simple VueJS plugin for WordPress.
  * Version: 1.0.0
- * Author: Michel Many (hello@michelmany.com)
+ * Author: Michel Many
+ * Plugin URI: https://github.com/michelmany/michelmany-vuejs-plugin
+ * Author URI: https://michelmany.com
  * Text Domain: mmvuejs
  */
 
