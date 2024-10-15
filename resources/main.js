@@ -1,9 +1,9 @@
 import {createApp} from 'vue';
-import './style.css';
+import './assets/style.css';
 import App from './App.vue';
-import router from './router';
-import store from './store';
-import { showAdminNotice } from './admin-notices';
+import router from './js/router';
+import store from './js/store';
+import { showAdminNotice } from './js/admin-notices';
 
 createApp(App).use(router).use(store).mount('#mmvuejs-app');
 

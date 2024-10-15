@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MMVUEJS\\' => array($baseDir . '/includes'),
+    'MMVUEJS\\' => array($baseDir . '/app'),
 );

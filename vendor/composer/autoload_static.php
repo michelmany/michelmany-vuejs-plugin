@@ -16,7 +16,7 @@ class ComposerStaticInit9cb98a3f90dd7f6afddb41797efec16b
     public static $prefixDirsPsr4 = array (
         'MMVUEJS\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/includes',
+            0 => __DIR__ . '/../..' . '/app',
         ),
     );
 

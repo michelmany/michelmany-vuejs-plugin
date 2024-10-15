@@ -1,9 +1,11 @@
 <?php
 
-namespace MMVUEJS;
+namespace MMVUEJS\Controllers;
 
-use WP_REST_Request;
+use MMVUEJS\Helpers\SanitizationHelper;
+use MMVUEJS\Models\SettingsModel;
 use WP_Error;
+use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -58,12 +60,7 @@ class RestApiController {
 	 * @return \WP_REST_Response
 	 */
 	public function get_all_settings(): \WP_REST_Response {
-		$default_settings = [
-			'numberOfRows'      => 5,
-			'humanReadableDate' => true,
-			'emails'            => [ sanitize_email( get_option( 'mmvuejs_admin_email' ) ) ],
-		];
-		$settings = get_option( 'mmvuejs_settings', $default_settings );
+		$settings = SettingsModel::get_all_settings();
 
 		return rest_ensure_response( $settings );
 	}
@@ -97,9 +94,7 @@ class RestApiController {
 			return $valid_value;
 		}
 
-		$settings = get_option( 'mmvuejs_settings', [] );
-		$settings[ $setting_key ] = $valid_value;
-		update_option( 'mmvuejs_settings', $settings );
+		SettingsModel::update_settings( $setting_key, $valid_value );
 
 		return rest_ensure_response( [ $setting_key => $valid_value ] );
 	}
@@ -145,73 +140,10 @@ class RestApiController {
 	 */
 	private function get_allowed_settings(): array {
 		return [
-			'numberOfRows'      => [ $this, 'validate_number_of_rows' ],
-			'humanReadableDate' => [ $this, 'validate_human_readable_date' ],
-			'emails'            => [ $this, 'validate_emails' ],
+			'numberOfRows'      => [ SanitizationHelper::class, 'validate_number_of_rows' ],
+			'humanReadableDate' => [ SanitizationHelper::class, 'validate_human_readable_date' ],
+			'emails'            => [ SanitizationHelper::class, 'validate_emails' ],
 		];
-	}
-
-	/**
-	 * Validate the number of rows.
-	 *
-	 * @param  mixed  $value
-	 *
-	 * @return WP_Error|int
-	 */
-	public function validate_number_of_rows( mixed $value ): WP_Error|int {
-		$value = (int) $value;
-		if ( $value < 1 || $value > 5 ) {
-			return new WP_Error( 'invalid_number_of_rows', __( 'Number of rows must be between 1 and 5.', 'mmvuejs' ),
-				[ 'status' => 400 ] );
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Validate the human-readable date setting.
-	 *
-	 * @param  mixed  $value
-	 *
-	 * @return mixed
-	 */
-	public function validate_human_readable_date( mixed $value ): mixed {
-		$value = filter_var( $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-		if ( $value === null ) {
-			return new WP_Error( 'invalid_human_readable_date', __( 'Invalid value for humanReadableDate.', 'mmvuejs' ),
-				[ 'status' => 400 ] );
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Validate the emails setting.
-	 *
-	 * @param  mixed  $value
-	 *
-	 * @return WP_Error|array
-	 */
-	public function validate_emails( mixed $value ): WP_Error|array {
-		if ( ! is_array( $value ) ) {
-			return new WP_Error( 'invalid_emails', __( 'Emails must be an array.', 'mmvuejs' ), [ 'status' => 400 ] );
-		}
-		$emails = array_map( 'sanitize_email', $value );
-		$emails = array_filter( $emails );
-
-		if ( count( $emails ) < 1 || count( $emails ) > 5 ) {
-			return new WP_Error( 'invalid_email_count', __( 'You must have between 1 and 5 valid emails.', 'mmvuejs' ),
-				[ 'status' => 400 ] );
-		}
-
-		foreach ( $emails as $email ) {
-			if ( ! is_email( $email ) ) {
-				return new WP_Error( 'invalid_email', __( 'One or more emails are invalid.', 'mmvuejs' ),
-					[ 'status' => 400 ] );
-			}
-		}
-
-		return $emails;
 	}
 
 	/**
@@ -230,7 +162,7 @@ class RestApiController {
 	 * @param  WP_REST_Request  $request
 	 * @param  string  $key
 	 *
-	 * @return bool|\WP_Error
+	 * @return WP_Error|bool
 	 */
 	public function validate_setting_key( mixed $param, WP_REST_Request $request, string $key ): WP_Error|bool {
 		if ( ! is_string( $param ) || empty( $param ) ) {
