@@ -1,56 +1,67 @@
 <template>
   <div class="settings">
     <div class="admin-notices"></div>
-    <h2>{{ __('Settings', 'mmvuejs') }}</h2>
+    <h2 class="mmvuejs-separate-sections my-0">{{ __('Settings', 'mmvuejs') }}</h2>
     <form @submit.prevent="submitSettings">
-      <div class="form-group">
-        <label for="numberOfRows">{{ __('Number of Rows (1-5):', 'mmvuejs') }}</label>
-        <input
-            id="numberOfRows"
-            type="number"
-            v-model.number="settings.numberOfRows"
-            min="1"
-            max="5"
-        />
-      </div>
-
-      <div class="form-group">
-        <label>{{ __('Date Format:', 'mmvuejs') }}</label>
-        <div>
-          <label>
-            <input
-                type="radio"
-                :value="true"
-                v-model="settings.humanReadableDate"
-            />
-            {{ __('Human Readable', 'mmvuejs') }}
-          </label>
-          <label>
-            <input
-                type="radio"
-                :value="false"
-                v-model="settings.humanReadableDate"
-            />
-            {{ __('Unix Timestamp', 'mmvuejs') }}
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ __('Emails:', 'mmvuejs') }}</label>
-        <div v-for="(email, index) in settings.emails" :key="index" class="email-field">
+      <div class="form-group mmvuejs-separate-sections">
+        <label for="numberOfRows" class="mmvuejs-label">{{ __('Number of Rows (1-5)', 'mmvuejs') }}</label>
+        <div class="mmvuejs-field">
           <input
-              type="email"
-              v-model="settings.emails[index]"
+              id="numberOfRows"
+              type="number"
+              v-model.number="settings.numberOfRows"
+              min="1"
+              max="5"
           />
-          <button
-              type="button"
-              @click="removeEmail(index)"
-              v-if="settings.emails.length > 1"
-          >
-            {{ __('Remove', 'mmvuejs') }}
-          </button>
         </div>
+      </div>
+
+      <div class="form-group mmvuejs-separate-sections">
+        <label class="mmvuejs-label">{{ __('Date Format', 'mmvuejs') }}</label>
+        <div class="mmvuejs-field">
+          <span class="mr-10">
+            <label for="human-readable-true">
+              <input
+                  type="radio"
+                  :value="true"
+                  v-model="settings.humanReadableDate"
+                  id="human-readable-true"
+              />
+              {{ __('Human Readable', 'mmvuejs') }}
+            </label>
+          </span>
+          <span class="mr-10">
+            <label for="human-readable-false">
+              <input
+                  type="radio"
+                  :value="false"
+                  v-model="settings.humanReadableDate"
+                  id="human-readable-false"
+              />
+              {{ __('Unix Timestamp', 'mmvuejs') }}
+            </label>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group mmvuejs-separate-sections">
+        <label class="mmvuejs-label">{{ __('Emails', 'mmvuejs') }}</label>
+        <div class="mmvuejs-field">
+          <div v-for="(email, index) in settings.emails" :key="index" class="email-field">
+            <input
+                type="email"
+                v-model="settings.emails[index]"
+            />
+            <button
+                type="button"
+                @click="removeEmail(index)"
+                v-if="settings.emails.length > 1"
+            >
+              <i class="dashicons dashicons-trash" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
         <button
             type="button"
             class="mmvuejs-btn mmvuejs-btn-md mmvuejs-btn-gray"
@@ -61,14 +72,17 @@
         </button>
       </div>
 
-      <button type="submit">{{ __('Save Settings', 'mmvuejs') }}</button>
+      <div class="py-25">
+        <button type="submit" class="mmvuejs-btn-orange">{{ __('Save Settings', 'mmvuejs') }}</button>
+      </div>
     </form>
   </div>
 </template>
 
 <script>
 import {mapState, mapActions} from 'vuex';
-const { __ } = wp.i18n;
+
+const {__} = wp.i18n;
 
 export default {
   name: 'Settings',
@@ -116,8 +130,21 @@ export default {
 </script>
 
 <style scoped>
-.form-group {
-  margin-bottom: 20px;
+.email-field button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  margin-left: 0 !important;
+}
+
+.dashicons {
+  border: 0;
+  color: #999;
+}
+
+.dashicons:hover {
+  border: none;
+  color: #d63638;
 }
 
 .email-field {
@@ -149,27 +176,5 @@ input[type='email'] {
   line-height: 1.3;
 }
 
-button[type='submit'] {
-  background-color: #e27730;
-  border-color: #e27730;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 9px 15px;
-  min-height: 36px;
-  line-height: 16px;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 3px;
-  cursor: pointer;
-  display: inline-block;
-  margin: 0;
-  text-decoration: none;
-  text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
-  text-shadow: none;
-  box-shadow: none;
-  outline: none;
-}
+
 </style>

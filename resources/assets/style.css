@@ -2,14 +2,35 @@
     margin: 0;
 }
 
+.mmvuejs-admin-header {
+    border-top: 3px solid #e27730;
+}
+
 .mmvuejs-admin-nav {
     background: #fff;
     min-height: 58px;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     display: flex;
     gap: 35px;
     align-items: center;
+}
+
+.mmvuejs-admin-nav a {
+    border-bottom: 3px solid #fff;
+    box-shadow: none;
+    color: #666;
+    display: inline-block;
+    padding: 20px 0 17px 0;
+    text-decoration: none;
+}
+
+.mmvuejs-admin-nav a.router-link-active {
+    border-color: #e27730;
+}
+
+.mmvuejs-admin-nav a:hover {
+    border-color: #999;
 }
 
 .mmvuejs-admin-header {
@@ -60,3 +81,90 @@
     color: #555;
 }
 
+.mmvuejs-btn-gray:hover {
+    background-color: #eee;
+    border-color: #555;
+    color: #444;
+}
+
+.mmvuejs-btn-orange {
+    background-color: #e27730;
+    border-color: #e27730;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 9px 15px;
+    min-height: 36px;
+    line-height: 16px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-shadow: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.mmvuejs-btn-orange:hover {
+    background-color: #b85a1b;
+    border-color: #b85a1b;
+    color: #fff;
+}
+
+.toplevel_page_mmvuejs-dashboard h2 {
+    color: #2c3337;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 30px 0;
+}
+
+.mmvuejs-separate-sections {
+    border-bottom: 1px solid #e4e4e4;
+    padding: 30px 0;
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.mmvuejs-label {
+    display: block;
+    float: left;
+    width: 205px;
+    font-weight: 600;
+}
+
+.mmvuejs-field {
+    display: block;
+    margin: 0 0 0 205px;
+    max-width: 800px;
+}
+
+.toplevel_page_mmvuejs-dashboard .mt-10 {
+    margin-top: 10px;
+}
+
+.toplevel_page_mmvuejs-dashboard .py-25 {
+    padding: 25px 0;
+}
+
+.toplevel_page_mmvuejs-dashboard .mr-10 {
+    margin-right: 10px;
+}
+
+.toplevel_page_mmvuejs-dashboard .mb-0 {
+    margin-bottom: 0;
+}
+
+.toplevel_page_mmvuejs-dashboard .mt-0 {
+    margin-top: 0;
+}
+
+.toplevel_page_mmvuejs-dashboard .my-0 {
+    margin-top: 0;
+    margin-bottom: 0;
+}

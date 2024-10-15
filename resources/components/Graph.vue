@@ -1,6 +1,6 @@
 <template>
   <div class="graph-page">
-    <h2>{{ __('Graph', 'mmvuejs') }}</h2>
+    <h2 class="mmvuejs-separate-sections mt-0">{{ __('Graph', 'mmvuejs') }}</h2>
     <div v-if="processedGraphData.length" class="chart-container">
       <line-chart :chart-data="chartData" :chart-options="chartOptions"></line-chart>
     </div>

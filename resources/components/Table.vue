@@ -1,36 +1,38 @@
 <template>
   <div class="table-page">
-    <div v-if="tableData">
-      <h2>{{ tableData.title }}</h2>
+    <div class="mmvuejs-separate-sections">
+      <div v-if="tableData">
+        <h2 class="mt-0">{{ tableData.title }}</h2>
+      </div>
+      <div v-else>
+        <p>{{ __('Loading data...', 'mmvuejs') }}</p>
+      </div>
+      <table v-if="displayedData.length" class="mmvuejs-table">
+        <thead>
+        <tr>
+          <th v-for="(header, index) in tableHeaders" :key="index">
+            {{ header }}
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(row, index) in displayedData" :key="row.id">
+          <td>{{ row.id }}</td>
+          <td>
+            <a :href="row.url" target="_blank">{{ row.url }}</a>
+          </td>
+          <td>{{ row.title }}</td>
+          <td>{{ row.pageviews }}</td>
+          <td>{{ formatDate(row.date) }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <p v-else>{{ __('No data available.', 'mmvuejs') }}</p>
     </div>
-    <div v-else>
-      <p>{{ __('Loading data...', 'mmvuejs') }}</p>
-    </div>
-    <table v-if="displayedData.length">
-      <thead>
-      <tr>
-        <th v-for="(header, index) in tableHeaders" :key="index">
-          {{ header }}
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(row, index) in displayedData" :key="row.id">
-        <td>{{ row.id }}</td>
-        <td>
-          <a :href="row.url" target="_blank">{{ row.url }}</a>
-        </td>
-        <td>{{ row.title }}</td>
-        <td>{{ row.pageviews }}</td>
-        <td>{{ formatDate(row.date) }}</td>
-      </tr>
-      </tbody>
-    </table>
-    <p v-else>{{ __('No data available.', 'mmvuejs') }}</p>
 
     <!-- Emails List -->
     <div class="emails-list">
-      <h3>{{ __('Emails', 'mmvuejs') }}</h3>
+      <h2>{{ __('Emails', 'mmvuejs') }}</h2>
       <ul>
         <li v-for="(email, index) in settings.emails" :key="index">{{ email }}</li>
       </ul>
@@ -95,6 +97,7 @@ export default {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
+  background: #fff;
 }
 
 .emails-list {
