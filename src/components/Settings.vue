@@ -1,5 +1,6 @@
 <template>
   <div class="settings">
+    <div class="admin-notices"></div>
     <h2>Settings</h2>
     <form @submit.prevent="submitSettings">
       <div class="form-group">
