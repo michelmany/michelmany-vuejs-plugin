@@ -33,9 +33,10 @@
     <!-- Emails List -->
     <div class="emails-list">
       <h2>{{ __('Emails', 'mmvuejs') }}</h2>
-      <ul>
+      <ul v-if="settings.emails.length">
         <li v-for="(email, index) in settings.emails" :key="index">{{ email }}</li>
       </ul>
+      <p v-else>{{ __('No email added to the list in the Settings.', 'mmvuejs') }}</p>
     </div>
   </div>
 </template>

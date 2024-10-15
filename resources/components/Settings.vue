@@ -51,6 +51,7 @@
             <input
                 type="email"
                 v-model="settings.emails[index]"
+                required
             />
             <button
                 type="button"
@@ -155,6 +156,12 @@ export default {
 
 .email-field input {
   flex: 1;
+}
+
+.email-field input:focus {
+  border: 1px solid #016aab;
+  box-shadow: 0 0 0 1px #016aab;
+  outline: none;
 }
 
 .email-field button {
