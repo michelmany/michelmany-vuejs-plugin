@@ -3,13 +3,19 @@
 namespace MMVUEJS;
 
 class AdminController {
+	/**
+	 * Register the admin menu and scripts.
+	 *
+	 * @return void
+	 */
 	public function register(): void {
-		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 	}
 
 	/**
-	 * Add admin menu
+	 * Add admin menu.
+	 *
 	 * @return void
 	 */
 	public function add_admin_menu(): void {
@@ -18,13 +24,20 @@ class AdminController {
 			__( 'MMVUEJS', 'mmvuejs' ),
 			'manage_options',
 			'mmvuejs-dashboard',
-			array( $this, 'display_dashboard' ),
-			'dashicons-admin-generic',
+			[ $this, 'display_dashboard' ],
+			'dashicons-chart-area',
 			100
 		);
 	}
 
-	public function enqueue_admin_scripts( $hook ) {
+	/**
+	 * Enqueue admin scripts and styles.
+	 *
+	 * @param  string  $hook
+	 *
+	 * @return void
+	 */
+	public function enqueue_admin_scripts( string $hook ): void {
 		if ( $hook !== 'toplevel_page_mmvuejs-dashboard' ) {
 			return;
 		}
@@ -32,30 +45,31 @@ class AdminController {
 		// Enqueue the main JavaScript file
 		wp_enqueue_script(
 			'mmvuejs-admin',
-			MMVUEJS_PLUGIN_URL . 'dist/main.js',
-			array(),
+			esc_url( MMVUEJS_PLUGIN_URL . 'dist/main.js' ),
+			[],
 			MMVUEJS_VERSION,
 			true
 		);
 
-		// Enqueue the CSS file if you have one
+		// Enqueue the CSS file if it exists
 		if ( file_exists( MMVUEJS_PLUGIN_PATH . 'dist/assets/main.css' ) ) {
 			wp_enqueue_style(
 				'mmvuejs-admin',
-				MMVUEJS_PLUGIN_URL . 'dist/assets/main.css',
-				array(),
+				esc_url( MMVUEJS_PLUGIN_URL . 'dist/assets/main.css' ),
+				[],
 				MMVUEJS_VERSION
 			);
 		}
 
-		wp_localize_script( 'mmvuejs-admin', 'mmvuejs', array(
+		wp_localize_script( 'mmvuejs-admin', 'mmvuejs', [
 			'api_url' => esc_url_raw( rest_url() ),
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
-		) );
+		] );
 	}
 
 	/**
-	 * Display dashboard
+	 * Display dashboard.
+	 *
 	 * @return void
 	 */
 	public function display_dashboard(): void {
@@ -64,6 +78,7 @@ class AdminController {
 		}
 
 		echo '<div class="wrap" id="mmvuejs-app"></div>';
-		echo '<noscript><div class="error">JavaScript is required to use this plugin. Please enable JavaScript in your browser settings.</div></noscript>';
+		echo '<noscript><div class="error">' . esc_html__( 'JavaScript is required to use this plugin. Please enable JavaScript in your browser settings.',
+				'mmvuejs' ) . '</div></noscript>';
 	}
 }
